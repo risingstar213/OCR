@@ -4,9 +4,14 @@ import xml.etree.ElementTree as ET
 from torch.utils.data import Dataset
 import numpy as np
 import cv2
+import sys
+from ctpn_utils import cal_rpn
+from config import IMAGE_MEAN
 
 class ICDARDataset(Dataset):
     def __init__(self, datadir, labelsdir):
+        datadir = os.path.abspath(datadir)
+        labelsdir = os.path.abspath(labelsdir)
         if not os.path.isdir(datadir):
             raise Exception('[ERROR] {} is not a directory'.format(datadir))
         if not os.path.isdir(labelsdir):
@@ -77,5 +82,34 @@ class ICDARDataset(Dataset):
         gt_path = os.path.join(self.labelsdir, 'gt_'+img_name.split('.')[0]+'.txt')
         gtbox = self.parse_gtfile(gt_path,rescale_fac)
 
+        [cls, regr], base_anchors = cal_rpn((h, w), (int(h / 16), int(w / 16)), 16, gtbox)
 
+        m_img = img - IMAGE_MEAN
 
+        regr = np.hstack([cls.reshape(cls.shape[0], 1), regr])
+
+        cls = np.expand_dims(cls, axis = 0)
+
+        # generate tensor
+
+        # 调整至channel first
+        m_img = torch.from_numpy(m_img.transpose([2, 0, 1])).float()
+
+        cls = torch.from_numpy(cls).float()
+
+        regr = torch.from_numpy(regr).float()
+
+        return m_img, cls, regr
+
+if __name__ == '__main__':
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    dataset = ICDARDataset('C:\\Users\\star\\Desktop\\cv\\ocr\\ctpn\\train_data\\train_img', 'C:\\Users\\star\\Desktop\\cv\\ocr\\ctpn\\train_data\\train_label')
+    # dataloader = DataLoader(dataset, batch_size=1, shuffle=True, num_workers=config.num_workers)
+    for m_img, cls, regr in dataset:
+        # print(m_img.size())
+        imgs = m_img.to(device)
+        clss = cls.to(device)
+        regrs = regr.to(device)
+        print(cls[0][0])
+        print(regr[0][0])
+        break

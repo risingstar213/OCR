@@ -114,4 +114,7 @@ def cal_rpn(imgsize, featuresize, scale, gtboxes):
             # print('bgindex:',len(bg_index),'num_bg',num_bg)
             labels[np.random.choice(bg_index, len(bg_index) - num_bg, replace=False)] = -1
 
-    
+    # 找重叠度最大的gt计算bbox
+    bbox_targets = bbox_transform(base_anchor, gtboxes[anchor_argmax_overlaps, :])
+
+    return [labels, bbox_targets], base_anchor
