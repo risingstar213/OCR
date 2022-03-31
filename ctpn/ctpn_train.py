@@ -3,7 +3,7 @@ import config
 import os
 from data.dataset import ICDARDataset
 from torch.utils.data import DataLoader
-from cptn_model import CPTNModel, RPN_CLS_Loss, RPN_REGR_Loss
+from ctpn_model import CPTNModel, RPN_CLS_Loss, RPN_REGR_Loss
 from torch import optim
 import sys
 

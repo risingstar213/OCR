@@ -8,8 +8,8 @@ OHEM = True
 IMAGE_MEAN = [123.68, 116.779, 103.939]
 
 pretrained_weights = 'checkpoints/v3_ctpn_ep22_0.3801_0.0971_0.4773.pth'
-icdar17_mlt_img_dir = '.\\train_data\\train_img\\'
-icdar17_mlt_gt_dir = '.\\train_data\\train_label\\'
+icdar17_mlt_img_dir = './train_data/train_img/'
+icdar17_mlt_gt_dir = './train_data/train_label/'
 
 num_workers = 0
 
