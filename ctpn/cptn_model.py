@@ -112,6 +112,9 @@ class basic_conv(nn.Module):
         return x
 
 class CPTNModel(nn.Module):
+    """
+        The model for CPTN model.
+    """
     def __init__(self):
         super().__init__()
         base_model = models.vgg16(pretrained=False)
